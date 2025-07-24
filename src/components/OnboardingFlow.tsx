@@ -112,18 +112,28 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="location">Country</Label>
                   <Select value={data.location} onValueChange={(value) => updateData('location', value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select region" />
+                      <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="north-america">North America</SelectItem>
-                      <SelectItem value="europe">Europe</SelectItem>
-                      <SelectItem value="asia">Asia</SelectItem>
-                      <SelectItem value="africa">Africa</SelectItem>
-                      <SelectItem value="south-america">South America</SelectItem>
-                      <SelectItem value="oceania">Oceania</SelectItem>
+                      <SelectItem value="us">United States</SelectItem>
+                      <SelectItem value="canada">Canada</SelectItem>
+                      <SelectItem value="uk">United Kingdom</SelectItem>
+                      <SelectItem value="germany">Germany</SelectItem>
+                      <SelectItem value="france">France</SelectItem>
+                      <SelectItem value="australia">Australia</SelectItem>
+                      <SelectItem value="japan">Japan</SelectItem>
+                      <SelectItem value="singapore">Singapore</SelectItem>
+                      <SelectItem value="india">India</SelectItem>
+                      <SelectItem value="brazil">Brazil</SelectItem>
+                      <SelectItem value="mexico">Mexico</SelectItem>
+                      <SelectItem value="south-africa">South Africa</SelectItem>
+                      <SelectItem value="netherlands">Netherlands</SelectItem>
+                      <SelectItem value="sweden">Sweden</SelectItem>
+                      <SelectItem value="switzerland">Switzerland</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
