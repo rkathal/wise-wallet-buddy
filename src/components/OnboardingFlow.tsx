@@ -59,6 +59,35 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     "other": "USD"
   };
 
+  // Currency symbol mapping
+  const currencySymbolMap: Record<string, string> = {
+    "USD": "$",
+    "CAD": "C$",
+    "GBP": "£",
+    "EUR": "€",
+    "AUD": "A$",
+    "JPY": "¥",
+    "SGD": "S$",
+    "INR": "₹",
+    "BRL": "R$",
+    "MXN": "MX$",
+    "ZAR": "R",
+    "SEK": "kr",
+    "CHF": "CHF"
+  };
+
+  const getIncomeRanges = (currency: string) => {
+    const symbol = currencySymbolMap[currency] || "$";
+    return [
+      { value: "under-2000", label: `Under ${symbol}2,000` },
+      { value: "2000-4000", label: `${symbol}2,000 - ${symbol}4,000` },
+      { value: "4000-6000", label: `${symbol}4,000 - ${symbol}6,000` },
+      { value: "6000-8000", label: `${symbol}6,000 - ${symbol}8,000` },
+      { value: "over-8000", label: `Over ${symbol}8,000` },
+      { value: "prefer-not-to-say", label: "Prefer not to say" }
+    ];
+  };
+
   const handleCountryChange = (country: string) => {
     updateData('location', country);
     updateData('currency', countryCurrencyMap[country] || 'USD');
@@ -220,12 +249,11 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                   <SelectValue placeholder="Select income range" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="under-2000">Under $2,000</SelectItem>
-                  <SelectItem value="2000-4000">$2,000 - $4,000</SelectItem>
-                  <SelectItem value="4000-6000">$4,000 - $6,000</SelectItem>
-                  <SelectItem value="6000-8000">$6,000 - $8,000</SelectItem>
-                  <SelectItem value="over-8000">Over $8,000</SelectItem>
-                  <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                  {getIncomeRanges(data.currency).map((range) => (
+                    <SelectItem key={range.value} value={range.value}>
+                      {range.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
