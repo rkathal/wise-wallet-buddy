@@ -39,24 +39,61 @@ interface FinancialDashboardProps {
     points: number;
     streak: number;
     goals: string[];
+    currency: string;
   };
   achievements: Achievement[];
 }
 
 export const FinancialDashboard = ({ userProfile, achievements }: FinancialDashboardProps) => {
+  // Currency symbol mapping
+  const currencySymbolMap: Record<string, string> = {
+    "USD": "$",
+    "CAD": "C$",
+    "GBP": "£",
+    "EUR": "€",
+    "AUD": "A$",
+    "JPY": "¥",
+    "SGD": "S$",
+    "INR": "₹",
+    "BRL": "R$",
+    "MXN": "MX$",
+    "ZAR": "R",
+    "SEK": "kr",
+    "CHF": "CHF"
+  };
+
+  const currencySymbol = currencySymbolMap[userProfile.currency] || "$";
+
+  // PPP-adjusted goal amounts based on currency
+  const getGoalAmounts = (currency: string) => {
+    const amounts: Record<string, { emergency: number; emergencyTarget: number; debt: number; investment: number; investmentTarget: number }> = {
+      "USD": { emergency: 2500, emergencyTarget: 10000, debt: 3500, investment: 1200, investmentTarget: 5000 },
+      "CAD": { emergency: 3200, emergencyTarget: 13000, debt: 4500, investment: 1500, investmentTarget: 6500 },
+      "GBP": { emergency: 2000, emergencyTarget: 8000, debt: 2800, investment: 1000, investmentTarget: 4000 },
+      "EUR": { emergency: 2200, emergencyTarget: 9000, debt: 3100, investment: 1100, investmentTarget: 4500 },
+      "AUD": { emergency: 3500, emergencyTarget: 14000, debt: 5000, investment: 1700, investmentTarget: 7000 },
+      "JPY": { emergency: 300000, emergencyTarget: 1200000, debt: 420000, investment: 144000, investmentTarget: 600000 },
+      "SGD": { emergency: 3200, emergencyTarget: 13000, debt: 4500, investment: 1500, investmentTarget: 6500 },
+      "INR": { emergency: 200000, emergencyTarget: 800000, debt: 280000, investment: 96000, investmentTarget: 400000 }
+    };
+    return amounts[currency] || amounts["USD"];
+  };
+
+  const goalAmounts = getGoalAmounts(userProfile.currency);
+
   const [goals] = useState<FinancialGoal[]>([
     {
       id: '1',
       title: 'Emergency Fund',
-      current: 2500,
-      target: 10000,
+      current: goalAmounts.emergency,
+      target: goalAmounts.emergencyTarget,
       category: 'savings',
       deadline: '2024-12-31'
     },
     {
       id: '2',
       title: 'Credit Card Debt',
-      current: 3500,
+      current: goalAmounts.debt,
       target: 0,
       category: 'debt',
       deadline: '2024-08-15'
@@ -64,8 +101,8 @@ export const FinancialDashboard = ({ userProfile, achievements }: FinancialDashb
     {
       id: '3',
       title: 'Investment Portfolio',
-      current: 1200,
-      target: 5000,
+      current: goalAmounts.investment,
+      target: goalAmounts.investmentTarget,
       category: 'investing',
       deadline: '2025-06-30'
     }
@@ -185,8 +222,8 @@ export const FinancialDashboard = ({ userProfile, achievements }: FinancialDashb
                       <h4 className="font-medium">{goal.title}</h4>
                       <p className="text-sm text-muted-foreground">
                         {goal.category === 'debt' 
-                          ? `$${goal.current.toLocaleString()} remaining`
-                          : `$${goal.current.toLocaleString()} of $${goal.target.toLocaleString()}`
+                          ? `${currencySymbol}${goal.current.toLocaleString()} remaining`
+                          : `${currencySymbol}${goal.current.toLocaleString()} of ${currencySymbol}${goal.target.toLocaleString()}`
                         }
                       </p>
                     </div>

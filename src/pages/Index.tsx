@@ -29,6 +29,7 @@ interface UserProfile {
   name: string;
   age: string;
   location: string;
+  currency: string;
   language: string;
   income: string;
   goals: string[];

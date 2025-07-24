@@ -78,14 +78,76 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
 
   const getIncomeRanges = (currency: string) => {
     const symbol = currencySymbolMap[currency] || "$";
-    return [
-      { value: "under-2000", label: `Under ${symbol}2,000` },
-      { value: "2000-4000", label: `${symbol}2,000 - ${symbol}4,000` },
-      { value: "4000-6000", label: `${symbol}4,000 - ${symbol}6,000` },
-      { value: "6000-8000", label: `${symbol}6,000 - ${symbol}8,000` },
-      { value: "over-8000", label: `Over ${symbol}8,000` },
-      { value: "prefer-not-to-say", label: "Prefer not to say" }
-    ];
+    
+    // PPP-adjusted annual income ranges by currency
+    const ranges: Record<string, { value: string; label: string }[]> = {
+      "USD": [
+        { value: "under-25000", label: `Under ${symbol}25,000` },
+        { value: "25000-50000", label: `${symbol}25,000 - ${symbol}50,000` },
+        { value: "50000-75000", label: `${symbol}50,000 - ${symbol}75,000` },
+        { value: "75000-100000", label: `${symbol}75,000 - ${symbol}100,000` },
+        { value: "100000-150000", label: `${symbol}100,000 - ${symbol}150,000` },
+        { value: "over-150000", label: `Over ${symbol}150,000` }
+      ],
+      "CAD": [
+        { value: "under-30000", label: `Under ${symbol}30,000` },
+        { value: "30000-60000", label: `${symbol}30,000 - ${symbol}60,000` },
+        { value: "60000-90000", label: `${symbol}60,000 - ${symbol}90,000` },
+        { value: "90000-120000", label: `${symbol}90,000 - ${symbol}120,000` },
+        { value: "120000-180000", label: `${symbol}120,000 - ${symbol}180,000` },
+        { value: "over-180000", label: `Over ${symbol}180,000` }
+      ],
+      "GBP": [
+        { value: "under-20000", label: `Under ${symbol}20,000` },
+        { value: "20000-35000", label: `${symbol}20,000 - ${symbol}35,000` },
+        { value: "35000-50000", label: `${symbol}35,000 - ${symbol}50,000` },
+        { value: "50000-75000", label: `${symbol}50,000 - ${symbol}75,000` },
+        { value: "75000-100000", label: `${symbol}75,000 - ${symbol}100,000` },
+        { value: "over-100000", label: `Over ${symbol}100,000` }
+      ],
+      "EUR": [
+        { value: "under-22000", label: `Under ${symbol}22,000` },
+        { value: "22000-40000", label: `${symbol}22,000 - ${symbol}40,000` },
+        { value: "40000-60000", label: `${symbol}40,000 - ${symbol}60,000` },
+        { value: "60000-80000", label: `${symbol}60,000 - ${symbol}80,000` },
+        { value: "80000-120000", label: `${symbol}80,000 - ${symbol}120,000` },
+        { value: "over-120000", label: `Over ${symbol}120,000` }
+      ],
+      "AUD": [
+        { value: "under-35000", label: `Under ${symbol}35,000` },
+        { value: "35000-65000", label: `${symbol}35,000 - ${symbol}65,000` },
+        { value: "65000-90000", label: `${symbol}65,000 - ${symbol}90,000` },
+        { value: "90000-120000", label: `${symbol}90,000 - ${symbol}120,000` },
+        { value: "120000-180000", label: `${symbol}120,000 - ${symbol}180,000` },
+        { value: "over-180000", label: `Over ${symbol}180,000` }
+      ],
+      "JPY": [
+        { value: "under-3000000", label: `Under ${symbol}3,000,000` },
+        { value: "3000000-6000000", label: `${symbol}3,000,000 - ${symbol}6,000,000` },
+        { value: "6000000-9000000", label: `${symbol}6,000,000 - ${symbol}9,000,000` },
+        { value: "9000000-12000000", label: `${symbol}9,000,000 - ${symbol}12,000,000` },
+        { value: "12000000-18000000", label: `${symbol}12,000,000 - ${symbol}18,000,000` },
+        { value: "over-18000000", label: `Over ${symbol}18,000,000` }
+      ],
+      "SGD": [
+        { value: "under-30000", label: `Under ${symbol}30,000` },
+        { value: "30000-60000", label: `${symbol}30,000 - ${symbol}60,000` },
+        { value: "60000-90000", label: `${symbol}60,000 - ${symbol}90,000` },
+        { value: "90000-120000", label: `${symbol}90,000 - ${symbol}120,000` },
+        { value: "120000-180000", label: `${symbol}120,000 - ${symbol}180,000` },
+        { value: "over-180000", label: `Over ${symbol}180,000` }
+      ],
+      "INR": [
+        { value: "under-500000", label: `Under ${symbol}5,00,000` },
+        { value: "500000-1000000", label: `${symbol}5,00,000 - ${symbol}10,00,000` },
+        { value: "1000000-2000000", label: `${symbol}10,00,000 - ${symbol}20,00,000` },
+        { value: "2000000-3000000", label: `${symbol}20,00,000 - ${symbol}30,00,000` },
+        { value: "3000000-5000000", label: `${symbol}30,00,000 - ${symbol}50,00,000` },
+        { value: "over-5000000", label: `Over ${symbol}50,00,000` }
+      ]
+    };
+    
+    return ranges[currency] || ranges["USD"];
   };
 
   const handleCountryChange = (country: string) => {
@@ -243,10 +305,10 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
             </div>
             
             <div>
-              <Label>Monthly Income Range (Optional)</Label>
+              <Label>Annual Income Range</Label>
               <Select value={data.income} onValueChange={(value) => updateData('income', value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select income range" />
+                  <SelectValue placeholder="Select your annual income range" />
                 </SelectTrigger>
                 <SelectContent>
                   {getIncomeRanges(data.currency).map((range) => (
@@ -388,7 +450,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
               onClick={nextStep}
               disabled={
                 (step === 1 && (!data.name || !data.age || !data.location)) ||
-                (step === 2 && data.goals.length === 0) ||
+                (step === 2 && (data.goals.length === 0 || !data.income)) ||
                 (step === 3 && !data.experience)
               }
               className="flex items-center gap-2"
