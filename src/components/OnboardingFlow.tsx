@@ -13,6 +13,7 @@ interface OnboardingData {
   name: string;
   age: string;
   location: string;
+  currency: string;
   language: string;
   income: string;
   goals: string[];
@@ -30,12 +31,38 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     name: "",
     age: "",
     location: "",
+    currency: "USD",
     language: "en",
     income: "",
     goals: [],
     experience: "",
     accessibility: []
   });
+
+  // Country to currency mapping
+  const countryCurrencyMap: Record<string, string> = {
+    "us": "USD",
+    "canada": "CAD", 
+    "uk": "GBP",
+    "germany": "EUR",
+    "france": "EUR",
+    "australia": "AUD",
+    "japan": "JPY",
+    "singapore": "SGD",
+    "india": "INR",
+    "brazil": "BRL",
+    "mexico": "MXN",
+    "south-africa": "ZAR",
+    "netherlands": "EUR",
+    "sweden": "SEK",
+    "switzerland": "CHF",
+    "other": "USD"
+  };
+
+  const handleCountryChange = (country: string) => {
+    updateData('location', country);
+    updateData('currency', countryCurrencyMap[country] || 'USD');
+  };
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
@@ -113,7 +140,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                 
                 <div>
                   <Label htmlFor="location">Country</Label>
-                  <Select value={data.location} onValueChange={(value) => updateData('location', value)}>
+                  <Select value={data.location} onValueChange={handleCountryChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
@@ -138,6 +165,15 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                   </Select>
                 </div>
               </div>
+              
+              {data.location && (
+                <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Selected Currency:</span>
+                    <span className="font-semibold text-primary">{data.currency}</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );
